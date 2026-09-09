@@ -5,9 +5,9 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import javax.swing.BoxLayout;
-import java.awt.Color;
+//import java.awt.Color;
 import javax.swing.JProgressBar;
-import java.awt.Dimension;
+//import java.awt.Dimension;
 
 
 // Al usar 'extends JFrame', le decimos a Java que nuestra clase GeneradorUI
@@ -75,6 +75,8 @@ public class GeneratorUI extends JFrame {
 
         // Creamos el botón
         generar = new JButton("Generar Password");
+        // Hace que la tecla "ENTER" active el botón de generar contraseña.
+        this.getRootPane().setDefaultButton(generar);
         copiar = new JButton("Copiar Password");
 
         // Creamos una etiqueta de texto simple para evaluar la fuerza.
@@ -251,7 +253,20 @@ public class GeneratorUI extends JFrame {
                 portapapeles.setContents(seleccion, null);
 
                 // (Opcional) Podemos cambiar el texto del botón un segundo para que el usuario sepa que ha funcionado
+                //copiar.setText("¡Copiado!");
+
+                // 4. Cambiamos el texto del botón y lo deshabilitamos temporalmente.
                 copiar.setText("¡Copiado!");
+                copiar.setEnabled(false);
+
+                // 5. Creamos el temporizador de 2000 ms (2 segundos) para volver al estado inicial
+                javax.swing.Timer temporizador = new javax.swing.Timer(2000, e -> {
+                    copiar.setText("Copiar contraseña");
+                    copiar.setEnabled(true);
+                });
+
+                temporizador.setRepeats(false); // Para que se ejecute solo una vez
+                temporizador.start();
             }
         });
     }
