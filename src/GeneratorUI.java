@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import javax.swing.BoxLayout;
+import java.awt.Color;
 
 // Al usar 'extends JFrame', le decimos a Java que nuestra clase GeneradorUI
 // "es una" ventana y hereda todos los comportamientos de una ventana de sistema operativo.
@@ -72,6 +73,7 @@ public class GeneratorUI extends JFrame {
 
         // Creamos una etiqueta de texto simple para evaluar la fuerza.
         etiquetaFuerza = new JLabel("Fuerza: -");
+        etiquetaFuerza.setFont(new Font("Arial", Font.BOLD, 14)); //Para resaltarlo aún más.
         etiquetaPassword = new JLabel("Password Generado");
         etiquetaLongitud = new JLabel("Longitud Password");
 
@@ -164,6 +166,22 @@ public class GeneratorUI extends JFrame {
                 // 5. Evaluamos la fuerza y la mostramos al usuario.
                 String fuerza = motor.evaluarFuerza(claveGenerada);
                 etiquetaFuerza.setText("Fuerza: " + fuerza);
+
+                // 6. Asignamos un color según el nivel de fuerza. Se utilizará valores RGB para que tenga un acabado mucho más estilizado y moderno.
+                switch (fuerza){
+                    case "DÉBIL":
+                        etiquetaFuerza.setForeground(new Color(220, 53, 69));
+                        break;
+                    case "MEDIA":
+                        etiquetaFuerza.setForeground(new Color(230, 150, 0));
+                        break;
+                    case "FUERTE":
+                        etiquetaFuerza.setForeground(new Color(40, 167, 69));
+                        break;
+                    default:
+                        etiquetaFuerza.setForeground(Color.BLACK);
+                        break;
+                }
             }
             // Capturamos el error de conversión de texto a número
             catch (NumberFormatException excepcion) {
