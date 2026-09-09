@@ -6,6 +6,9 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import javax.swing.BoxLayout;
 import java.awt.Color;
+import javax.swing.JProgressBar;
+import java.awt.Dimension;
+
 
 // Al usar 'extends JFrame', le decimos a Java que nuestra clase GeneradorUI
 // "es una" ventana y hereda todos los comportamientos de una ventana de sistema operativo.
@@ -25,7 +28,7 @@ public class GeneratorUI extends JFrame {
     private JCheckBox numeros;
     private JCheckBox simbolos;
 
-    private JLabel etiquetaFuerza;
+    //private JLabel etiquetaFuerza;
     private JLabel etiquetaPassword;
     private JLabel etiquetaLongitud;
 
@@ -35,13 +38,16 @@ public class GeneratorUI extends JFrame {
     // El botón para copiar la contraseña.
     private JButton copiar;
 
+    // Barra que evalua la fuerza de la contraseña.
+    private JProgressBar barraFuerza;
+
     // 2. EL CONSTRUCTOR
     // Este código se ejecuta automáticamente cuando hacemos el 'new GeneradorUI()' en el Main.
     public GeneratorUI(){
 
         // --- Configuraciones de la Ventana Principal ---
         setTitle("GeneradorUI");
-        setSize(400,500);
+        setSize(350,500);
 
         // MUY IMPORTANTE: Le dice al programa que se detenga por completo cuando cerramos la ventana.
         // Si no lo pones, la ventana se cierra pero el programa sigue consumiendo RAM de fondo.
@@ -72,10 +78,16 @@ public class GeneratorUI extends JFrame {
         copiar = new JButton("Copiar Password");
 
         // Creamos una etiqueta de texto simple para evaluar la fuerza.
-        etiquetaFuerza = new JLabel("Fuerza: -");
-        etiquetaFuerza.setFont(new Font("Arial", Font.BOLD, 14)); //Para resaltarlo aún más.
+        //etiquetaFuerza = new JLabel("Fuerza: -");
+        //etiquetaFuerza.setFont(new Font("Arial", Font.BOLD, 14)); //Para resaltarlo aún más.
         etiquetaPassword = new JLabel("Password Generado");
         etiquetaLongitud = new JLabel("Longitud Password");
+
+        barraFuerza = new JProgressBar(0, 100);             // Rango de 0 a 100%
+        barraFuerza.setValue(0);
+        barraFuerza.setStringPainted(true);                // Activa la etiqueta de texto interna
+        barraFuerza.setString("Sin evaluar");               // Texto inicial
+        barraFuerza.setPreferredSize(new Dimension(250, 20)); // Tamaño sugerido (ancho x alto)
 
         // --- Creación del Lienzo (JPanel) ---
         // JFrame es la ventana de cristal, JPanel es el corcho donde pinchamos las cosas.
@@ -90,19 +102,19 @@ public class GeneratorUI extends JFrame {
         // Vamos añadiendo (pinchando) los elementos al panel.
         // Por defecto, Java los coloca uno al lado del otro de izquierda a derecha.
         JPanel filaLongitud = new JPanel();
-        filaLongitud.setLayout(new FlowLayout(FlowLayout.LEFT));
+        filaLongitud.setLayout(new FlowLayout(FlowLayout.CENTER));
         filaLongitud.add(etiquetaLongitud);
         filaLongitud.add(longitud);
         panel.add(filaLongitud);
 
         JPanel filaMinusculas = new JPanel();
-        filaMinusculas.setLayout(new FlowLayout(FlowLayout.LEFT));
+        filaMinusculas.setLayout(new FlowLayout(FlowLayout.CENTER));
         filaMinusculas.add(minusculas);
         filaMinusculas.add(mayusculas);
         panel.add(filaMinusculas);
 
         JPanel filaNumeros = new JPanel();
-        filaNumeros.setLayout(new FlowLayout(FlowLayout.LEFT));
+        filaNumeros.setLayout(new FlowLayout(FlowLayout.CENTER));
         filaNumeros.add(numeros);
         filaNumeros.add(simbolos);
         panel.add(filaNumeros);
@@ -111,27 +123,28 @@ public class GeneratorUI extends JFrame {
         JPanel filaGenerar = new JPanel();
 
         // 2. Le decimos que ordene sus elementos de izquierda a derecha y los centre
-        filaGenerar.setLayout(new FlowLayout(FlowLayout.LEFT));
+        filaGenerar.setLayout(new FlowLayout(FlowLayout.CENTER));
 
         // 3. Metemos el botón y la etiqueta dentro de este mini-panel
         filaGenerar.add(generar);
-        filaGenerar.add(etiquetaFuerza);
+        //filaGenerar.add(etiquetaFuerza);
+        filaGenerar.add(barraFuerza);
 
         // 4. Añadimos el mini-panel (que ya contiene ambas cosas en línea) al panel principal
         panel.add(filaGenerar);
 
         JPanel filaPassword = new JPanel();
-        filaPassword.setLayout(new FlowLayout(FlowLayout.LEFT));
+        filaPassword.setLayout(new FlowLayout(FlowLayout.CENTER));
         filaPassword.add(etiquetaPassword);
         filaPassword.add(password);
         panel.add(filaPassword);
 
         JPanel filaCopiar = new JPanel();
-        filaCopiar.setLayout(new FlowLayout(FlowLayout.LEFT));
+        filaCopiar.setLayout(new FlowLayout(FlowLayout.CENTER));
         filaCopiar.add(copiar);
         panel.add(filaCopiar);
 
-        // Colgamos el corcho (panel) ya lleno de cosas dentro de nuestra ventana principal.
+        // 5. Colgamos el corcho (panel) ya lleno de cosas dentro de nuestra ventana principal.
         add(panel);
 
         // --- El Evento del Botón (La acción) ---
@@ -165,10 +178,10 @@ public class GeneratorUI extends JFrame {
 
                 // 5. Evaluamos la fuerza y la mostramos al usuario.
                 String fuerza = motor.evaluarFuerza(claveGenerada);
-                etiquetaFuerza.setText("Fuerza: " + fuerza);
+                //etiquetaFuerza.setText("Fuerza: " + fuerza);
 
                 // 6. Asignamos un color según el nivel de fuerza. Se utilizará valores RGB para que tenga un acabado mucho más estilizado y moderno.
-                switch (fuerza){
+                /*switch (fuerza){
                     case "DÉBIL":
                         etiquetaFuerza.setForeground(new Color(220, 53, 69));
                         break;
@@ -181,7 +194,29 @@ public class GeneratorUI extends JFrame {
                     default:
                         etiquetaFuerza.setForeground(Color.BLACK);
                         break;
+                }*/
+
+                // 6-BIS. Asignamos una barra de progreso según el nivel de fuerza.
+                switch (fuerza) {
+                    case "DÉBIL":
+                        barraFuerza.setValue(33);
+                        barraFuerza.setString("DÉBIL (33%)");
+                        barraFuerza.setForeground(new Color(220, 53, 69));  // Rojo
+                        break;
+
+                    case "MEDIA":
+                        barraFuerza.setValue(66);
+                        barraFuerza.setString("MEDIA (66%)");
+                        barraFuerza.setForeground(new Color(230, 150, 0));  // Naranja
+                        break;
+
+                    case "FUERTE":
+                        barraFuerza.setValue(100);
+                        barraFuerza.setString("FUERTE (100%)");
+                        barraFuerza.setForeground(new Color(40, 167, 69));  // Verde
+                        break;
                 }
+
             }
             // Capturamos el error de conversión de texto a número
             catch (NumberFormatException excepcion) {
