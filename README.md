@@ -45,7 +45,7 @@ El evaluador analiza cada clave generada asignando **1 punto** por cada criterio
 
 ### Nivel de Seguridad
 * 🔴 **0 – 2 puntos:** `DÉBIL`
-* 🟡 **3 – 4 puntos:** `MEDIA`
+* 🟠 **3 – 4 puntos:** `MEDIA`
 * 🟢 **5 – 6 puntos:** `FUERTE`
 
 ---
